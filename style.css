@@ -1,0 +1,131 @@
+:root {
+  --ios-white: #FFFFFF;
+  --ios-noti-bg: rgba(255, 255, 255, 0.55); /* 更輕薄的半透明感 */
+  --ios-text-dark: #1C1C1E;
+  --ios-text-gray: #3C3C43;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #000;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+}
+
+.iphone {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wallpaper {
+  position: absolute;
+  inset: 0;
+  /* 使用 iOS 官方風格桌布圖片 */
+  background: url('https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
+  background-size: cover;
+  z-index: -1;
+  /* 增加一點對比度讓白字更清楚 */
+  filter: brightness(0.9);
+}
+
+.lock-screen-info {
+  margin-top: calc(90px + env(safe-area-inset-top));
+  color: var(--ios-white);
+  text-align: center;
+  text-shadow: 0 0 20px rgba(0,0,0,0.2), 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.date { 
+  font-size: 21px; 
+  font-weight: 600; 
+  margin: 0; 
+  letter-spacing: 0.5px;
+}
+
+.time { 
+  font-size: 105px; /* iOS 16 後的時間字體較大 */
+  font-weight: 700; 
+  margin: -5px 0 0 0;
+  letter-spacing: -2px;
+}
+
+/* 通知卡片：模仿真正的 iOS 底部彈出 */
+.ios-notification {
+  position: absolute;
+  bottom: -200px;
+  left: 10px;
+  right: 10px;
+  background: var(--ios-noti-bg);
+  backdrop-filter: blur(35px) saturate(200%) brightness(1.1);
+  -webkit-backdrop-filter: blur(35px) saturate(200%) brightness(1.1);
+  border-radius: 28px; /* iOS 17 的圓角更圓潤 */
+  padding: 18px;
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+.ios-notification.active {
+  bottom: calc(115px + env(safe-area-inset-bottom));
+  opacity: 1;
+}
+
+.app-info { display: flex; align-items: center; gap: 8px; }
+.app-name { font-size: 13px; font-weight: 600; color: var(--ios-text-gray); opacity: 0.9; }
+.noti-time { font-size: 12px; color: var(--ios-text-gray); opacity: 0.7; float: right; }
+
+.noti-body strong { display: block; font-size: 16px; color: var(--ios-text-dark); margin-top: 5px; }
+.noti-body p { margin: 2px 0 0; font-size: 15px; color: var(--ios-text-dark); opacity: 0.85; }
+
+.bottom-bar {
+  position: absolute;
+  bottom: calc(45px + env(safe-area-inset-bottom));
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 45px;
+}
+
+.circle-btn {
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.15); /* 從黑色改為淺色半透明，更配亮色桌布 */
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--ios-white);
+  font-size: 20px;
+}
+
+.home-indicator {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 135px;
+  height: 5px;
+  background: var(--ios-white);
+  border-radius: 10px;
+  opacity: 0.8;
+}
+
+#triggerBtn {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  z-index: 999;
+}

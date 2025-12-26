@@ -1,30 +1,46 @@
-<div class="iphone">
-  <div class="wallpaper"></div>
-  
-  <div class="lock-screen-info">
-    <p class="date" id="current-date">12月26日 星期五</p>
-    <h1 class="time" id="current-time">09:41</h1>
-  </div>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>iPhone Lock Screen</title>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-  <div id="notification" class="ios-notification">
-    <div class="noti-header">
-      <div class="app-info">
-        <div class="app-icon">🧧</div>
-        <span class="app-name">錢包</span>
+  <div class="iphone">
+    <div class="wallpaper"></div>
+    <div class="lock-screen-info">
+      <p class="date" id="current-date">--月--日 星期-</p>
+      <h1 class="time" id="current-time">00:00</h1>
+    </div>
+
+    <div id="notification" class="ios-notification">
+      <div class="noti-header">
+        <div class="app-info">
+          <div class="app-icon">🧧</div>
+          <span class="app-name">錢包</span>
+        </div>
+        <span class="noti-time">現在</span>
       </div>
-      <span class="noti-time">現在</span>
+      <div class="noti-body">
+        <strong>中獎通知</strong>
+        <p>恭喜！您獲得一筆獎金 $500</p>
+      </div>
     </div>
-    <div class="noti-body">
-      <strong>中獎通知</strong>
-      <p>恭喜！您獲得一筆獎金 $500</p>
+
+    <div class="bottom-bar">
+      <div class="circle-btn">🔦</div>
+      <div class="unlock-indicator"></div>
+      <div class="circle-btn">📷</div>
     </div>
+    
+    <button id="triggerBtn" style="position:absolute; inset:0; width:100%; height:100%; opacity:0; z-index:999; cursor:pointer;"></button>
   </div>
 
-  <div class="bottom-bar">
-    <div class="circle-btn">🔦</div>
-    <div class="unlock-indicator"></div>
-    <div class="circle-btn">📷</div>
-  </div>
-  
-  <button id="triggerBtn" style="position:absolute; inset:0; width:100%; height:100%; opacity:0; z-index:999; cursor:pointer;"></button>
-</div>
+  <script src="script.js"></script>
+</body>
+</html>

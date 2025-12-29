@@ -6,41 +6,95 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>iPhone Lock Screen</title>
-    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* 直接把你的 CSS 貼在這裡 */
+        :root {
+          --ios-blur: blur(25px);
+          --ios-bg: rgba(255, 255, 255, 0.6);
+        }
+        body {
+          background: #1a1a1a;
+          margin: 0; padding: 0;
+          width: 100vw; height: 100vh;
+          display: flex; justify-content: center; align-items: center;
+          font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+          overflow: hidden;
+        }
+        .iphone {
+          width: 100%; height: 100%;
+          position: relative; overflow: hidden;
+          display: flex; flex-direction: column; align-items: center;
+          background: #2b5876; /* 給一個保底顏色 */
+        }
+        @media (min-width: 500px) {
+          .iphone { width: 390px; height: 844px; border: 12px solid #333; border-radius: 55px; }
+        }
+        .wallpaper {
+          position: absolute; inset: 0;
+          background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%), 
+                      url('https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?q=80&w=1974&auto=format&fit=crop');
+          background-size: cover; background-position: center;
+          z-index: 1;
+        }
+        .lock-screen-info {
+          position: relative; z-index: 10; color: white; text-align: center;
+          margin-top: calc(80px + env(safe-area-inset-top));
+          text-shadow: 0 2px 15px rgba(0,0,0,0.3);
+        }
+        .date { font-size: 22px; font-weight: 500; }
+        .time { font-size: 100px; font-weight: 700; margin: 0; letter-spacing: -2px; }
+        .ios-notification {
+          position: absolute; bottom: -200px; left: 12px; right: 12px;
+          background: var(--ios-bg);
+          backdrop-filter: var(--ios-blur); -webkit-backdrop-filter: var(--ios-blur);
+          border-radius: 24px; padding: 18px; opacity: 0; z-index: 100;
+          transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .ios-notification.active { bottom: calc(110px + env(safe-area-inset-bottom, 20px)); opacity: 1; }
+        .bottom-bar {
+          position: absolute; bottom: calc(40px + env(safe-area-inset-bottom, 20px));
+          width: 100%; display: flex; justify-content: space-around; z-index: 10;
+        }
+        .circle-btn { width: 50px; height: 50px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 20px; backdrop-filter: blur(10px); }
+        .unlock-indicator { position: absolute; bottom: -15px; width: 135px; height: 5px; background: white; border-radius: 10px; opacity: 0.8; }
+    </style>
 </head>
 <body>
 
     <div class="iphone">
         <div class="wallpaper"></div>
-        
         <div class="lock-screen-info">
-            <p class="date" id="current-date">--月--日 星期-</p>
-            <h1 class="time" id="current-time">00:00</h1>
+            <p id="current-date" class="date">--月--日 星期-</p>
+            <h1 id="current-time" class="time">00:00</h1>
         </div>
-
         <div id="notification" class="ios-notification">
             <div class="noti-header">
-                <div class="app-info">
-                    <div class="app-icon">🧧</div>
-                    <span class="app-name">錢包</span>
-                </div>
+                <div class="app-info"><div class="app-icon">🧧</div><span class="app-name">錢包</span></div>
                 <span class="noti-time">現在</span>
             </div>
-            <div class="noti-body">
-                <strong>中獎通知</strong>
-                <p>恭喜！您獲得一筆獎金 $500</p>
-            </div>
+            <div class="noti-body"><strong>中獎通知</strong><p>恭喜！您獲得一筆獎金 $500</p></div>
         </div>
-
         <div class="bottom-bar">
-            <div class="circle-btn">🔦</div>
-            <div class="unlock-indicator"></div>
-            <div class="circle-btn">📷</div>
+            <div class="circle-btn">🔦</div><div class="unlock-indicator"></div><div class="circle-btn">📷</div>
         </div>
-        
         <button id="triggerBtn" style="position:absolute; inset:0; width:100%; height:100%; opacity:0; z-index:999; cursor:pointer;"></button>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // 把 JS 也直接寫在這裡
+        const triggerBtn = document.getElementById('triggerBtn');
+        const notification = document.getElementById('notification');
+        triggerBtn.addEventListener('click', () => { notification.classList.toggle('active'); });
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes}`;
+            const options = { month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('zh-TW', options);
+        }
+        updateClock(); setInterval(updateClock, 1000);
+    </script>
 </body>
 </html>

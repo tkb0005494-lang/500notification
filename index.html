@@ -5,144 +5,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>iPhone Lock Screen</title>
+    <title>Classified Intelligence</title>
     
     <style>
-        /* --- 你的完整 CSS 開始 --- */
         :root {
+          /* 間諜風格：深色半透明與冷色調模糊 */
           --ios-blur: blur(25px);
-          --ios-bg: rgba(255, 255, 255, 0.6);
+          --ios-bg: rgba(20, 20, 25, 0.75); 
+          --text-main: #ffffff;
+          --text-sub: #a0a0a5;
+          --accent-color: #00ff41; /* 經典間諜綠色（可選） */
         }
 
         body {
-          background: #1a1a1a; /* 電腦版背景色 */
-          margin: 0;
-          padding: 0;
-          width: 100vw;
-          height: 100vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          background: #000;
+          margin: 0; padding: 0;
+          width: 100vw; height: 100vh;
+          display: flex; justify-content: center; align-items: center;
           font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
           overflow: hidden;
         }
 
-        /* 預設手機樣式：全螢幕 */
         .iphone {
-          width: 100%;
-          height: 100%;
-          position: relative;
-          overflow: hidden;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
+          width: 100%; height: 100%;
+          position: relative; overflow: hidden;
+          display: flex; flex-direction: column; align-items: center;
           background: #000;
-          transition: all 0.3s ease;
         }
 
-        /* --- 自動偵測電腦裝置：寬度大於 500px 時 --- */
         @media (min-width: 500px) {
           .iphone {
-            width: 390px; /* iPhone 15/16 標準寬度 */
-            height: 844px; /* iPhone 15 標準高度 */
-            max-height: 90vh; /* 防止電腦螢幕太矮放不下 */
-            border: 12px solid #333; /* 模擬手機邊框 */
-            border-radius: 55px; /* 模擬手機圓角 */
-            box-shadow: 0 50px 100px rgba(0,0,0,0.6);
+            width: 390px; height: 844px;
+            border: 12px solid #222;
+            border-radius: 55px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
           }
         }
 
         .wallpaper {
-          position: absolute;
-          inset: 0;
-          background: url('https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?q=80&w=1974&auto=format&fit=crop');
+          position: absolute; inset: 0;
+          /* 換成帶有科技感、暗黑數據風格的桌布 */
+          background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                      url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop');
           background-size: cover;
           background-position: center;
-          z-index: 0; /* 修正：設為 0 確保在背景色之上 */
+          z-index: 0;
+          filter: brightness(0.7) contrast(1.1);
         }
 
         .lock-screen-info {
-          position: relative;
-          color: white;
+          position: relative; z-index: 10;
+          color: var(--text-main);
           text-align: center;
-          margin-top: calc(80px + env(safe-area-inset-top));
-          text-shadow: 0 2px 15px rgba(0,0,0,0.3);
-          z-index: 10;
+          margin-top: calc(90px + env(safe-area-inset-top));
+          text-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
 
-        .date { font-size: 22px; font-weight: 500; margin-bottom: 5px; }
+        .date { font-size: 21px; font-weight: 500; margin-bottom: 5px; opacity: 0.9; }
         .time { font-size: 100px; font-weight: 700; margin: 0; letter-spacing: -2px; }
 
+        /* 間諜風格通知：深色背景、簡約文字 */
         .ios-notification {
-          position: absolute;
-          bottom: -200px;
-          left: 12px;
-          right: 12px;
+          position: absolute; bottom: -200px;
+          left: 12px; right: 12px;
           background: var(--ios-bg);
           backdrop-filter: var(--ios-blur);
           -webkit-backdrop-filter: var(--ios-blur);
-          border-radius: 24px;
-          padding: 18px;
-          transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
-          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+          border-radius: 22px;
+          padding: 16px;
           opacity: 0;
+          transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 15px 35px rgba(0,0,0,0.5);
           z-index: 100;
+          border: 0.5px solid rgba(255,255,255,0.1);
         }
 
         .ios-notification.active {
-          bottom: calc(110px + env(safe-area-inset-bottom, 20px));
+          bottom: calc(115px + env(safe-area-inset-bottom, 25px));
           opacity: 1;
         }
 
         .noti-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 5px;
+          display: flex; justify-content: space-between;
+          align-items: center; margin-bottom: 6px;
         }
 
         .app-info { display: flex; align-items: center; gap: 8px; }
-        .app-icon { font-size: 16px; }
-        .app-name { font-size: 13px; font-weight: 600; color: #333; }
-        .noti-time { font-size: 12px; color: #666; }
+        .app-icon { font-size: 16px; filter: grayscale(1); } /* 讓圖示變灰 */
+        .app-name { font-size: 12px; font-weight: 600; color: var(--text-sub); letter-spacing: 1px; }
+        .noti-time { font-size: 11px; color: var(--text-sub); opacity: 0.6; }
 
-        .noti-body strong { display: block; font-size: 16px; color: #000; }
-        .noti-body p { margin: 2px 0 0; font-size: 15px; color: #222; }
+        .noti-body strong { display: block; font-size: 16px; color: var(--text-main); margin-top: 2px; }
+        .noti-body p { margin: 2px 0 0; font-size: 15px; color: var(--text-sub); line-height: 1.4; }
 
         .bottom-bar {
           position: absolute;
-          bottom: calc(40px + env(safe-area-inset-bottom, 20px));
+          bottom: calc(45px + env(safe-area-inset-bottom, 25px));
           width: 100%;
-          display: flex;
-          justify-content: space-around;
-          align-items: center;
+          display: flex; justify-content: space-around; align-items: center;
           z-index: 10;
         }
 
         .circle-btn {
-          width: 50px;
-          height: 50px;
-          background: rgba(255,255,255,0.15);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
+          width: 52px; height: 52px;
+          background: rgba(255,255,255,0.1);
+          backdrop-filter: blur(15px);
+          -webkit-backdrop-filter: blur(15px);
           border-radius: 50%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          color: white;
-          font-size: 20px;
+          display: flex; justify-content: center; align-items: center;
+          color: white; font-size: 20px;
         }
 
         .unlock-indicator {
-          position: absolute;
-          bottom: -15px;
-          width: 135px;
-          height: 5px;
-          background: white;
-          border-radius: 10px;
-          opacity: 0.8;
+          position: absolute; bottom: -25px;
+          width: 135px; height: 5px;
+          background: white; border-radius: 10px; opacity: 0.4;
         }
-        /* --- 你的完整 CSS 結束 --- */
     </style>
 </head>
 <body>
@@ -153,19 +131,20 @@
         <div class="lock-screen-info">
             <p class="date" id="current-date">--月--日 星期-</p>
             <h1 class="time" id="current-time">00:00</h1>
+            <div style="font-size: 12px; margin-top: 10px; opacity: 0.5; letter-spacing: 2px;">ENCRYPTED LINE</div>
         </div>
 
         <div id="notification" class="ios-notification">
             <div class="noti-header">
                 <div class="app-info">
-                    <div class="app-icon">🧧</div>
-                    <span class="app-name">錢包</span>
+                    <div class="app-icon">📡</div>
+                    <span class="app-name">MESSAGES</span>
                 </div>
                 <span class="noti-time">現在</span>
             </div>
             <div class="noti-body">
-                <strong>中獎通知</strong>
-                <p>恭喜！您獲得一筆獎金 $500</p>
+                <strong>未知號碼</strong>
+                <p>東西準備好了。今晚 23:00 老地方見，讀完即焚。</p>
             </div>
         </div>
 
@@ -179,7 +158,6 @@
     </div>
 
     <script>
-        // --- 你的 JS 邏輯 ---
         const triggerBtn = document.getElementById('triggerBtn');
         const notification = document.getElementById('notification');
 

@@ -13,6 +13,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            padding: 20px 0;
         }
         .form-container {
             background: white;
@@ -20,7 +21,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 450px;
+            max-width: 480px;
         }
         h2 {
             text-align: center;
@@ -28,26 +29,48 @@
             margin-bottom: 25px;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
-        label {
+        label.main-label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             font-weight: bold;
-            color: #555;
+            color: #333;
         }
-        input {
+        /* 簡答框樣式 */
+        input[type="text"], 
+        input[type="tel"] {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 6px;
-            box-sizing: border-box; /* 確保寬度包含 padding */
+            box-sizing: border-box;
             font-size: 16px;
         }
-        input:focus {
-            outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
+        /* 單選按鈕組樣式 */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-left: 5px;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+            color: #555;
+        }
+        .radio-option input {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        /* 其他選項輸入框 */
+        #other-university-text {
+            margin-top: 8px;
+            display: none;
+            width: 90%;
+            margin-left: 25px;
         }
         button {
             width: 100%;
@@ -58,7 +81,7 @@
             border-radius: 6px;
             font-size: 18px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 15px;
             transition: background 0.3s;
         }
         button:hover {
@@ -78,28 +101,38 @@
     <h2>資料填寫</h2>
     <form id="google-form">
         <div class="form-group">
-            <label for="name">姓名</label>
-            <input type="text" id="name" name="entry.1657705744" required>
+            <label class="main-label">姓名</label>
+            <input type="text" name="entry.1657705744" required placeholder="請輸入姓名">
         </div>
 
         <div class="form-group">
-            <label for="university">就讀大學</label>
-            <input type="text" id="university" name="entry.734592295" required>
+            <label class="main-label">就讀大學</label>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="entry.734592295" value="清華大學" required> 清華大學</label>
+                <label class="radio-option"><input type="radio" name="entry.734592295" value="陽明交通大學"> 陽明交通大學</label>
+                <label class="radio-option"><input type="radio" name="entry.734592295" value="__other_option__" id="radio-other"> 其他</label>
+                <input type="text" id="other-university-text" placeholder="請手寫輸入大學名稱">
+            </div>
         </div>
 
         <div class="form-group">
-            <label for="department">科系</label>
-            <input type="text" id="department" name="entry.1452511070" required>
+            <label class="main-label">科系</label>
+            <input type="text" name="entry.1452511070" required placeholder="例如：資訊工程學系">
         </div>
 
         <div class="form-group">
-            <label for="grade">年級</label>
-            <input type="text" id="grade" name="entry.1184283924" required>
+            <label class="main-label">年級</label>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="entry.1184283924" value="大一" required> 大一</label>
+                <label class="radio-option"><input type="radio" name="entry.1184283924" value="大二"> 大二</label>
+                <label class="radio-option"><input type="radio" name="entry.1184283924" value="大三"> 大三</label>
+                <label class="radio-option"><input type="radio" name="entry.1184283924" value="大四"> 大四</label>
+            </div>
         </div>
 
         <div class="form-group">
-            <label for="phone">連絡電話</label>
-            <input type="tel" id="phone" name="entry.762548578" required>
+            <label class="main-label">連絡電話</label>
+            <input type="tel" name="entry.762548578" required placeholder="例如：0912345678">
         </div>
 
         <button type="submit" id="submit-btn">送出表單</button>
@@ -109,8 +142,26 @@
 
 <script>
     const form = document.getElementById('google-form');
+    const radioOther = document.getElementById('radio-other');
+    const otherInput = document.getElementById('other-university-text');
+    const universityRadios = document.querySelectorAll('input[name="entry.734592295"]');
     const msg = document.getElementById('message');
     const btn = document.getElementById('submit-btn');
+
+    // 大學「其他」選項顯示邏輯
+    universityRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radioOther.checked) {
+                otherInput.style.display = 'block';
+                otherInput.required = true;
+                otherInput.focus();
+            } else {
+                otherInput.style.display = 'none';
+                otherInput.required = false;
+                otherInput.value = '';
+            }
+        });
+    });
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -119,9 +170,14 @@
         btn.innerText = '處理中...';
 
         const formData = new FormData(form);
+        
+        // 如果勾選了其他，手動覆蓋該 Entry ID 的值
+        if (radioOther.checked) {
+            formData.set('entry.734592295', otherInput.value);
+        }
+
         const url = 'https://docs.google.com/forms/d/e/1FAIpQLSeJxG9VPd0bFtTVgFXg6ljTsTazeThFF48KHTOV9EU4f0thlA/formResponse';
 
-        // 使用 no-cors 模式，因為 Google 表單不支援 CORS 回傳
         fetch(url, {
             method: 'POST',
             mode: 'no-cors',
@@ -131,14 +187,15 @@
             msg.style.color = 'green';
             msg.innerText = '感謝提交！資料已成功送出。';
             form.reset();
+            otherInput.style.display = 'none';
             btn.disabled = false;
             btn.innerText = '送出表單';
         }).catch(error => {
             msg.style.display = 'block';
             msg.style.color = 'red';
-            msg.innerText = '提交失敗，請檢查網路連線。';
+            msg.innerText = '提交失敗，請檢查網路。';
             btn.disabled = false;
-            btn.innerText = '重試送出';
+            btn.innerText = '重新送出';
         });
     });
 </script>
